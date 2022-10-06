@@ -116,6 +116,9 @@ if [ "$init" != "skip" ]; then
         if [ "$git" == "united" ]; then
             git=https://github.com/henk717/KoboldAI-Client
         fi
+        if [ "$git" == "Entropy" ]; then
+            git=https://github.com/placebomancer/KoboldAI-Client
+        fi
     else
         git=https://github.com/koboldai/KoboldAI-Client
     fi
