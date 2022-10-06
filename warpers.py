@@ -265,8 +265,8 @@ def get_temp_for_normalized_entropy(scores, normalized_entropy, count_pruned_tok
     return get_temp_for_entropy(scores, entropy)
 
 class EntropyLogitsWarper(LogitsWarper):
-    def __init__(self, entropy: float = 0.0):
-        self.entropy = entropy
+    def __init__(self, temperature: float = 0.0):
+        self.entropy = temperature
 
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
         normalized_scores = scores.log_softmax(dim=-1)
