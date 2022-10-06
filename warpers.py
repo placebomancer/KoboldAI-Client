@@ -29,7 +29,7 @@ SOFTWARE.
 
 import torch
 from transformers import LogitsWarper
-
+import math
 
 class AdvancedRepetitionPenaltyLogitsProcessor(LogitsWarper):
     def __init__(self, *args, **kwargs):
@@ -183,7 +183,7 @@ def get_count(scores: torch.FloatTensor, keepdim: bool = False, count_pruned_tok
     if count_pruned_tokens:
         count = scores.count_nonzero(dim=-1)
     else:
-        count = scores.gt(negative_infinity).count_nonzero(dim=-1)
+        count = scores.gt(-math.inf).count_nonzero(dim=-1)
     if keepdim:
         sequences = scores.size(dim=0)
         return count.reshape(sequences, 1)
