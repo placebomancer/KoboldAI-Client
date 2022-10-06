@@ -1843,7 +1843,7 @@ def patch_transformers():
 
     # Patch transformers to use our custom logit warpers
     from transformers import LogitsProcessorList, LogitsWarper, LogitsProcessor, TopKLogitsWarper, TopPLogitsWarper, TemperatureLogitsWarper, RepetitionPenaltyLogitsProcessor
-    from warpers import AdvancedRepetitionPenaltyLogitsProcessor, TailFreeLogitsWarper, TypicalLogitsWarper, TopALogitsWarper
+    from warpers import AdvancedRepetitionPenaltyLogitsProcessor, TailFreeLogitsWarper, TypicalLogitsWarper, TopALogitsWarper, EntropyLogitsWarper
 
     def dynamic_processor_wrap(cls, field_name, var_name, cond=None):
         old_call = cls.__call__
@@ -1867,7 +1867,7 @@ def patch_transformers():
     dynamic_processor_wrap(TopPLogitsWarper, "top_p", "top_p", cond=lambda x: x < 1.0)
     dynamic_processor_wrap(TailFreeLogitsWarper, "tfs", "tfs", cond=lambda x: x < 1.0)
     dynamic_processor_wrap(TypicalLogitsWarper, "typical", "typical", cond=lambda x: x < 1.0)
-    dynamic_processor_wrap(TemperatureLogitsWarper, "temperature", "temp", cond=lambda x: x != 1.0)
+    dynamic_processor_wrap(EntropyLogitsWarper, "temperature", "temp", cond=lambda x: x != 1.0)
 
     class LuaLogitsProcessor(LogitsProcessor):
 
@@ -1943,7 +1943,7 @@ def patch_transformers():
             self.__warper_list.append(TopPLogitsWarper(top_p=0.5, min_tokens_to_keep=1 + (beams > 1)))
             self.__warper_list.append(TailFreeLogitsWarper(tfs=0.5, min_tokens_to_keep=1 + (beams > 1)))
             self.__warper_list.append(TypicalLogitsWarper(typical=0.5, min_tokens_to_keep=1 + (beams > 1)))
-            self.__warper_list.append(TemperatureLogitsWarper(temperature=0.5))
+            self.__warper_list.append(EntropyLogitsWarper(temperature=0.5))
             self.__warper_list.append(AdvancedRepetitionPenaltyLogitsProcessor())
 
         def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, *args, **kwargs):
